@@ -18,7 +18,7 @@ const projectData = require("./modules/projects");
 
 // Create an Express app
 const app = express();
-const PORT = process.env.PORT || 4000;  
+const PORT = process.env.PORT || 8000;  
 
 
 app.use(express.json());
@@ -26,7 +26,7 @@ app.use(express.json());
 
 projectData.initialize()
     .then(() => {
-        console.log("Project data initialized successfully!");
+        console.log("Data initialized successfully!");
 
         
         app.get("/", (req, res) => {
@@ -42,7 +42,7 @@ projectData.initialize()
 
         
         app.get("/solutions/projects/id-demo", (req, res) => {
-            const projectId = 9; 
+            const projectId = 8; 
             projectData.getProjectById(projectId)
                 .then(project => res.json(project))
                 .catch(err => res.status(404).send(err));
@@ -62,6 +62,4 @@ projectData.initialize()
         });
 
     })
-    .catch(err => {
-        console.error("Failed to initialize project data:", err);
-    });
+    
