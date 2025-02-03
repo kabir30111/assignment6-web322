@@ -34,14 +34,14 @@ projectData.initialize()
         });
 
         
-        app.get("/solutions/projects", (req, res) => {
+        app.get("/project", (req, res) => {
             projectData.getAllProjects()
                 .then(projects => res.json(projects))
                 .catch(err => res.status(500).send(err));
         });
 
         
-        app.get("/solutions/projects/id-demo", (req, res) => {
+        app.get("/project/id-demo", (req, res) => {
             const projectId = 8; 
             projectData.getProjectById(projectId)
                 .then(project => res.json(project))
@@ -49,7 +49,7 @@ projectData.initialize()
         });
 
         
-        app.get("/solutions/projects/sector-demo", (req, res) => {
+        app.get("/project/sector-demo", (req, res) => {
             const sectorQuery = "agriculture"; 
             projectData.getProjectsBySector(sectorQuery)
                 .then(projects => res.json(projects))
