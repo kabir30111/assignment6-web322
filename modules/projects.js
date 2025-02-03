@@ -26,7 +26,7 @@ function getAllProjects() {
         if (projects.length > 0) {
             resolve(projects);
         } else {
-            reject("No projects found");
+            reject("No projects found : ");
         }
     });
 }
@@ -38,7 +38,7 @@ function getProjectById(projectId) {
         if (project) {
             resolve(project);
         } else {
-            reject(`Project with ID ${projectId} not found`);
+            reject(`Project with ID ${projectId} not found : `);
         }
     });
 }
@@ -52,7 +52,7 @@ function getProjectsBySector(sector) {
         if (filteredProjects.length > 0) {
             resolve(filteredProjects);
         } else {
-            reject(`No projects found for sector: ${sector}`);
+            reject(`No projects found for sector : ${sector}`);
         }
     });
 }
