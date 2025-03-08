@@ -1,65 +1,56 @@
 /********************************************************************************
-*  WEB322 – Assignment 02
+*  WEB322 – Assignment 03
 *  
 *  I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
 *  
 *  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 *  
-*  Name: Shubham 
-*  Student ID: 167744234 
-*  Date: 03-02-2025  
+*  Name: Kabir Hemant Merchant
+*  Student ID: 101390243
+*  Date: 17-02-2025  
 *
 ********************************************************************************/
 
-
 const express = require("express");
-const projectData = require("./modules/projects");  
-
-// Create an Express app
 const app = express();
-const PORT = process.env.PORT || 8000;  
+const PORT = process.env.PORT || 8000;
 
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
+app.use(express.static("public"));
 
-app.use(express.json());
+// Home Page
+app.get("/", (req, res) => res.render("home"));
 
+// About Page
+app.get("/about", (req, res) => res.render("about"));
 
-projectData.initialize()
-    .then(() => {
-        console.log("Data initialized successfully!");
+// Projects List Page
+app.get("/solutions/projects", (req, res) => {
+    const projects = [
+        { id: 1, title: "Solar Energy", sector: "Energy", summary_short: "Solar power generation." },
+        { id: 2, title: "Wind Turbines", sector: "Energy", summary_short: "Wind energy conversion." }
+    ];
+    res.render("projects", { projects });
+});
 
-        
-        app.get("/", (req, res) => {
-            res.send("Assignment 2: [Shubham] - [167744234]");
-        });
+// Individual Project Page
+app.get("/solutions/projects/:id", (req, res) => {
+    const project = {
+        id: req.params.id,
+        title: "Solar Energy",
+        feature_img_url: "https://example.com/solar.jpg",
+        intro_short: "Solar energy project",
+        impact: "Reduced carbon emissions",
+        original_source_url: "https://example.com/full-article"
+    };
+    res.render("project", { project });
+});
 
-        
-        app.get("/project", (req, res) => {
-            projectData.getAllProjects()
-                .then(projects => res.json(projects))
-                .catch(err => res.status(500).send(err));
-        });
+// 404 Page
+app.use((req, res) => {
+    res.status(404).render("404", { message: "Page not found" });
+});
 
-        
-        app.get("/project/id-demo", (req, res) => {
-            const projectId = 8; 
-            projectData.getProjectById(projectId)
-                .then(project => res.json(project))
-                .catch(err => res.status(404).send(err));
-        });
-
-        
-        app.get("/project/sector-demo", (req, res) => {
-            const sectorQuery = "agriculture"; 
-            projectData.getProjectsBySector(sectorQuery)
-                .then(projects => res.json(projects))
-                .catch(err => res.status(404).send(err));
-        });
-
-        
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
-        });
-
-    })
-    
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

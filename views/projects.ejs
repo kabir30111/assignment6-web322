@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Climate Solutions</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+    <!-- Include Navbar -->
+    <%- include('partials/navbar', {page: "/solutions/projects"}) %>
+
+    <div class="section">
+        <h1>Our Projects</h1>
+        <p>These are the initiatives we support in renewable energy and climate action.</p>
+
+        <table class="w-full mt-6 border-collapse border border-gray-500 shadow-xl rounded-lg overflow-hidden bg-gray-800 text-white">
+            <thead>
+                <tr class="bg-gray-700 text-yellow-300 text-lg">
+                    <th class="py-4 px-6">Title</th>
+                    <th class="py-4 px-6">Sector</th>
+                    <th class="py-4 px-6">Summary</th>
+                    <th class="py-4 px-6">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% projects.forEach(project => { %>
+                    <tr class="border-b border-gray-600 hover:bg-gray-700 transition duration-200">
+                        <td class="py-4 px-6"><%= project.title %></td>
+                        <td class="py-4 px-6"><a class="text-yellow-400 hover:underline" href="/solutions/projects?sector=<%= project.sector %>"><%= project.sector %></a></td>
+                        <td class="py-4 px-6"><%= project.summary_short %></td>
+                        <td class="py-4 px-6"><a class="text-blue-400 hover:underline" href="/solutions/projects/<%= project.id %>">Details</a></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        © 2025 Climate Solutions. All rights reserved.
+    </footer>
+
+</body>
+</html>

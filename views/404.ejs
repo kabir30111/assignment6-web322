@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Not Found</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Set a high-contrast background */
+        body {
+            background: #000; /* Pure black for highest contrast */
+            color: #fff; /* White text */
+        }
+
+        /* Centering */
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* 404 Heading */
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            color: #ff4444; /* Bright red for contrast */
+            text-shadow: 4px 4px 10px rgba(255, 68, 68, 0.8);
+        }
+
+        /* Subtext */
+        .error-text {
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        /* Button */
+        .btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #ffcc00;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0px 4px 10px rgba(255, 204, 0, 0.8);
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background: #ffdb4d;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="center">
+        <h1 class="error-code">404</h1>
+        <p class="error-text">Oops! The page you're looking for doesn't exist.</p>
+        <a class="btn" href="/">Go Back Home</a>
+    </div>
+
+</body>
+</html>
