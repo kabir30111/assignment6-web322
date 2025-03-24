@@ -85,3 +85,72 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+/*  404 Page Styling */
+.not-found-page {
+    background: #000; /* Pure black for highest contrast */
+    color: #fff; /* White text */
+}
+
+/*  Centering */
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Prevent issues on small screens */
+    text-align: center;
+}
+
+/*  404 Heading */
+.error-code {
+    font-size: 120px;
+    font-weight: 900;
+    color: #ff4444; /* Bright red for contrast */
+    text-shadow: 4px 4px 10px rgba(255, 68, 68, 0.8);
+}
+
+/*  Subtext */
+.error-text {
+    font-size: 24px;
+    opacity: 0.8;
+}
+
+/*  Button */
+.btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #ffcc00;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0px 4px 10px rgba(255, 204, 0, 0.8);
+    transition: 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background: #ffdb4d;
+    transform: scale(1.05);
+}
+
+/* 🌍 3D Button Style for Navbar */
+.brand-button {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    background: #ffcc00;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0px 4px 10px rgba(255, 204, 0, 0.8);
+    transition: 0.3s ease-in-out;
+}
+
+.brand-button:hover {
+    background: #ffdb4d;
+    transform: scale(1.05);
+}

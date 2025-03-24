@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Climate Solutions</title>
+    <title>About Us - Climate Solutions</title>
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 
-    <!-- Include Navbar -->
-    <%- include('partials/navbar', {page: "/about"}) %>
+    <!--  Correct Navbar Include -->
+    <%- include("partials/navbar", { page: "/about" }) %>
 
-    <div class="section">
+    <!--  About Section -->
+    <section class="section">
         <h1>About Climate Solutions</h1>
-        <p>We are dedicated to finding real, impactful solutions for climate change, focusing on renewable energy and sustainability.</p>
-        <a href="/">Go Back Home</a>
-    </div>
+        <p>We are dedicated to tackling climate change with innovative, data-driven projects.</p>
+        <p>Our goal is to promote sustainability, renewable energy, and environmental solutions.</p>
+    </section>
 
+    <!--  Our Vision -->
+    <section class="section">
+        <h2>Our Vision</h2>
+        <p>Creating a greener, cleaner, and more sustainable future for generations to come.</p>
+    </section>
+
+    <!--  Call to Action -->
+    <section class="section">
+        <h2>Join Our Mission</h2>
+        <p>Become a part of the change. Support and contribute to impactful projects.</p>
+        <a class="btn" href="/solutions/projects">View Projects</a>
+    </section>
+
+    <!--  Footer -->
     <footer>
-        © 2025 Climate Solutions. All rights reserved.
+        <p>© 2025 Climate Solutions. All rights reserved.</p>
     </footer>
 
 </body>

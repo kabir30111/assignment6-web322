@@ -3,11 +3,21 @@
 <p><%= project.intro_short %></p>
 <p><%= project.impact %></p>
 <a href="<%= project.original_source_url %>">More Info</a>
+<br><br>
+
+<!-- ✅ Edit Button -->
+<a href="/solutions/editProject/<%= project.id %>" class="inline-block bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition">
+  Edit This Project
+</a>
+
+<!-- Back Button -->
+<br><br>
 <button onclick="history.back(); return false;">Back</button>
 
+<!-- Random Quote -->
 <div id="quote"></div>
 <script>
-    document.addEventListener("DOMContentLoaded", ()=>{
+    document.addEventListener("DOMContentLoaded", ()=> {
         fetch("https://dummyjson.com/quotes/random")
             .then(response => response.json())
             .then(data => {

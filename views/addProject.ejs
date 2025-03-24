@@ -1,0 +1,34 @@
+<%- include("partials/header", { title: "Add Project", page: "/solutions/addProject" }) %>
+
+<h2>Add New Project</h2>
+
+<form action="/solutions/addProject" method="POST">
+  <label>Title:</label>
+  <input type="text" name="title" required>
+
+  <label>Feature Image URL:</label>
+  <input type="url" name="feature_img_url" required>
+
+  <label>Short Summary:</label>
+  <textarea name="summary_short" required></textarea>
+
+  <label>Intro:</label>
+  <textarea name="intro_short" required></textarea>
+
+  <label>Impact:</label>
+  <textarea name="impact" required></textarea>
+
+  <label>Original Source URL:</label>
+  <input type="url" name="original_source_url" required>
+
+  <label>Sector:</label>
+  <select name="sector_id" required>
+    <% sectors.forEach(sector => { %>
+      <option value="<%= sector.id %>"><%= sector.sector_name %></option>
+    <% }); %>
+  </select>
+
+  <button type="submit">Add Project</button>
+</form>
+
+<%- include("partials/footer") %>

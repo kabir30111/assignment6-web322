@@ -28,7 +28,10 @@
                 <% projects.forEach(project => { %>
                     <tr class="border-b border-gray-600 hover:bg-gray-700 transition duration-200">
                         <td class="py-4 px-6"><%= project.title %></td>
-                        <td class="py-4 px-6"><a class="text-yellow-400 hover:underline" href="/solutions/projects?sector=<%= project.sector %>"><%= project.sector %></a></td>
+                        <a class="text-yellow-400 hover:underline" href="/solutions/projects?sector=<%= project.Sector ? project.Sector.sector_name : 'Unknown' %>">
+                            <%= project.Sector ? project.Sector.sector_name : 'Unknown' %>
+                          </a>
+                          
                         <td class="py-4 px-6"><%= project.summary_short %></td>
                         <td class="py-4 px-6"><a class="text-blue-400 hover:underline" href="/solutions/projects/<%= project.id %>">Details</a></td>
                     </tr>
