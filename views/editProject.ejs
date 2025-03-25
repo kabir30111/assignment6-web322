@@ -1,4 +1,4 @@
-<%- include("partials/header", { title: "Edit Project" }) %>
+<%- include("partials/header", { title: "Edit Project", page: "/solutions/projects" }) %>
 
 <h2>Edit Project</h2>
 
@@ -26,7 +26,9 @@
   <label>Sector:</label>
   <select name="sector_id" required>
     <% sectors.forEach(sector => { %>
-      <option value="<%= sector.id %>" <%= project.Sector && project.Sector.id === sector.id ? "selected" : "" %>><%= sector.sector_name %></option>
+      <option value="<%= sector.id %>" <%= project.Sector && project.Sector.id === sector.id ? "selected" : "" %>>
+        <%= sector.sector_name %>
+      </option>
     <% }); %>
   </select>
 

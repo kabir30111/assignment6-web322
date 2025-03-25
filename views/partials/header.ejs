@@ -8,6 +8,10 @@
 </head>
 <body>
 
-    <%- include("partials/navbar", typeof page !== 'undefined' ? { page } : {}) %>
+  <% if (typeof page !== 'undefined') { %>
+    <%- include("./navbar", { page }) %>
+  <% } else { %>
+    <%- include("./navbar") %>
+  <% } %>
 
   <div class="section">

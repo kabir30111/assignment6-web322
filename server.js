@@ -66,18 +66,21 @@ app.get("/solutions/projects/:id", (req, res) => {
     });
 });
 
-// Add Project - Form
+// Add Project - Form Page
 app.get("/solutions/addProject", (req, res) => {
   getAllSectors()
     .then((sectors) => {
-        res.render("addProject", { sectors, page: "/solutions/addProject" });
+      res.render("addProject", {
+        sectors,
+        page: "/solutions/addProject", // ✅ this is what avoids undefined page errors
+      });
     })
     .catch((err) => {
       res.render("500", { message: `Error loading sectors: ${err}` });
     });
 });
 
-// Add Project - Submit
+// Add Project - Submission
 app.post("/solutions/addProject", (req, res) => {
   addProject(req.body)
     .then(() => {
@@ -85,10 +88,11 @@ app.post("/solutions/addProject", (req, res) => {
     })
     .catch((err) => {
       res.render("500", {
-        message: `I'm sorry, but we have encountered the following error: ${err}`
+        message: `I'm sorry, but we have encountered the following error: ${err}`,
       });
     });
 });
+
 
 // Edit Project - Form
 app.get("/solutions/editProject/:id", (req, res) => {
