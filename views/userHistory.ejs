@@ -1,0 +1,31 @@
+<%- include("partials/header", { title: "User History", page: "/userHistory" }) %>
+
+<main class="container" style="max-width: 900px; margin: auto; padding-top: 50px;">
+  <h1 class="text-2xl font-bold mb-6 text-center">User History</h1>
+
+  <div class="mb-6">
+    <p><strong>User Name:</strong> <%= session.user.userName %></p>
+    <p><strong>Email:</strong> <%= session.user.email %></p>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="table table-zebra w-full text-sm text-left">
+      <thead>
+        <tr>
+          <th class="p-3 bg-gray-200">Login Date/Time</th>
+          <th class="p-3 bg-gray-200">Client Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% session.user.loginHistory.forEach(entry => { %>
+          <tr>
+            <td class="p-3"><%= new Date(entry.dateTime).toLocaleString() %></td>
+            <td class="p-3"><%= entry.userAgent %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<%- include("partials/footer") %>

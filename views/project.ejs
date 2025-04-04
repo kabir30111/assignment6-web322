@@ -5,10 +5,12 @@
 <a href="<%= project.original_source_url %>">More Info</a>
 <br><br>
 
-<!-- ✅ Edit Button -->
-<a href="/solutions/editProject/<%= project.id %>" class="inline-block bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition">
-  Edit This Project
-</a>
+<!-- ✅ Edit Button (Only for logged-in users) -->
+<% if (session.user) { %>
+  <a href="/solutions/editProject/<%= project.id %>" class="inline-block bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition">
+    Edit This Project
+  </a>
+<% } %>
 
 <!-- Back Button -->
 <br><br>

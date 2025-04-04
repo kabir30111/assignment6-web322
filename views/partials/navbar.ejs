@@ -5,7 +5,34 @@
       <li><a class="<%= (page == '/') ? 'underline' : '' %>" href="/">Home</a></li>
       <li><a class="<%= (page == '/about') ? 'underline' : '' %>" href="/about">About</a></li>
       <li><a class="<%= (page == '/solutions/projects') ? 'underline' : '' %>" href="/solutions/projects">Projects</a></li>
-      <li><a class="<%= (page == '/solutions/addProject') ? 'underline' : '' %>" href="/solutions/addProject">Add Project</a></li>
+
+      <% if (session.user) { %>
+        <!-- Logged-in User Menu -->
+        <li><a class="<%= (page == '/solutions/addProject') ? 'underline' : '' %>" href="/solutions/addProject">Add Project</a></li>
+        <li>
+          <details class="dropdown">
+            <summary class="m-1 btn">Account: <%= session.user.userName %></summary>
+            <ul class="dropdown-content menu p-2 shadow bg-white text-black rounded-box w-52 z-50">
+              <li><a class="<%= (page == '/solutions/addProject') ? 'active' : '' %>" href="/solutions/addProject">Add Project</a></li>
+              <li><a class="<%= (page == '/userHistory') ? 'active' : '' %>" href="/userHistory">User History</a></li>
+              <li><a href="/logout">Log Out</a></li>
+            </ul>
+          </details>
+          
+        </li>
+      <% } else { %>
+        <!-- Guest Menu -->
+        <li>
+          <details class="dropdown">
+            <summary class="m-1 btn">Account</summary>
+            <ul class="dropdown-content menu p-2 shadow bg-white text-black rounded-box w-52 z-50">
+              <li><a class="<%= (page == '/login') ? 'active' : '' %>" href="/login">Login</a></li>
+              <li><a class="<%= (page == '/register') ? 'active' : '' %>" href="/register">Register</a></li>
+            </ul>
+          </details>
+          
+        </li>
+      <% } %>
     </ul>
   </div>
 </nav>
