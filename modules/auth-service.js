@@ -8,10 +8,12 @@ const userSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
   password: String,
   email: String,
-  loginHistory: [{
-    dateTime: Date,
-    userAgent: String
-  }]
+  loginHistory: [
+    {
+      dateTime: Date,
+      userAgent: String,
+    },
+  ],
 });
 
 module.exports.initialize = function () {
@@ -31,6 +33,11 @@ module.exports.initialize = function () {
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
+    if (!User) {
+      reject("User model is not initialized yet. Try again in a moment.");
+      return;
+    }
+
     if (userData.password !== userData.password2) {
       reject("Passwords do not match");
       return;
@@ -44,7 +51,7 @@ module.exports.registerUser = function (userData) {
           userName: userData.userName,
           password: userData.password,
           email: userData.email,
-          loginHistory: []
+          loginHistory: [],
         });
 
         newUser.save()
@@ -86,7 +93,7 @@ module.exports.checkUser = function (userData) {
 
             users[0].loginHistory.unshift({
               dateTime: new Date().toString(),
-              userAgent: userData.userAgent
+              userAgent: userData.userAgent,
             });
 
             User.updateOne(
