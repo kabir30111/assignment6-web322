@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
-let User; // Will be set on successful DB connection
-let isInitialized = false; // ✅ Flag to track DB readiness
+let User;
 
 const userSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
@@ -19,23 +18,25 @@ const userSchema = new mongoose.Schema({
 
 module.exports.initialize = function () {
   return new Promise((resolve, reject) => {
-    let db = mongoose.createConnection(process.env.MONGODB);
-
-    db.on("error", (err) => {
-      reject(err);
-    });
-
-    db.once("open", () => {
-      User = db.model("users", userSchema);
-      isInitialized = true; // ✅ Mark initialized
-      resolve();
-    });
+    // ✅ Connect globally (not createConnection)
+    mongoose
+      .connect(process.env.MONGODB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => {
+        User = mongoose.model("users", userSchema);
+        resolve();
+      })
+      .catch((err) => {
+        reject("Failed to connect to MongoDB: " + err);
+      });
   });
 };
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User || !isInitialized) {
+    if (!User) {
       reject("User model is not initialized yet. Try again in a moment.");
       return;
     }
@@ -45,7 +46,8 @@ module.exports.registerUser = function (userData) {
       return;
     }
 
-    bcrypt.hash(userData.password, 10)
+    bcrypt
+      .hash(userData.password, 10)
       .then((hash) => {
         userData.password = hash;
 
@@ -56,7 +58,8 @@ module.exports.registerUser = function (userData) {
           loginHistory: [],
         });
 
-        newUser.save()
+        newUser
+          .save()
           .then(() => resolve())
           .catch((err) => {
             if (err.code === 11000) {
@@ -75,7 +78,7 @@ module.exports.registerUser = function (userData) {
 
 module.exports.checkUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User || !isInitialized) {
+    if (!User) {
       reject("User model is not initialized yet. Try again in a moment.");
       return;
     }
@@ -87,10 +90,13 @@ module.exports.checkUser = function (userData) {
           return;
         }
 
-        bcrypt.compare(userData.password, users[0].password)
+        bcrypt
+          .compare(userData.password, users[0].password)
           .then((result) => {
             if (!result) {
-              reject("Incorrect Password for user: " + userData.userName);
+              reject(
+                "Incorrect Password for user: " + userData.userName
+              );
               return;
             }
 
@@ -115,7 +121,9 @@ module.exports.checkUser = function (userData) {
               });
           })
           .catch(() => {
-            reject("Incorrect Password for user: " + userData.userName);
+            reject(
+              "Incorrect Password for user: " + userData.userName
+            );
           });
       })
       .catch(() => {
