@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
-let User; // Will be set on successful DB connection
+let User;
 
 const userSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
@@ -16,103 +16,78 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-module.exports.initialize = function () {
-  return new Promise((resolve, reject) => {
-    let db = mongoose.createConnection(process.env.MONGODB);
-
-    db.on("error", (err) => {
-      reject(err);
+module.exports.initialize = async function () {
+  if (!global._mongooseConnection) {
+    global._mongooseConnection = mongoose.connect(process.env.MONGODB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
+  }
 
-    db.once("open", () => {
-      User = db.model("users", userSchema);
-      resolve();
-    });
-  });
+  const db = await global._mongooseConnection;
+  User = mongoose.models.users || mongoose.model("users", userSchema);
 };
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User) {
-      reject("User model is not initialized yet. Try again in a moment.");
-      return;
-    }
+    if (!User) return reject("User model not initialized");
 
     if (userData.password !== userData.password2) {
-      reject("Passwords do not match");
-      return;
+      return reject("Passwords do not match");
     }
 
-    bcrypt.hash(userData.password, 10)
+    bcrypt
+      .hash(userData.password, 10)
       .then((hash) => {
-        userData.password = hash;
-
-        let newUser = new User({
+        const newUser = new User({
           userName: userData.userName,
-          password: userData.password,
+          password: hash,
           email: userData.email,
           loginHistory: [],
         });
 
-        newUser.save()
-          .then(() => resolve())
-          .catch((err) => {
-            if (err.code === 11000) {
-              reject("User Name already taken");
-            } else {
-              reject("There was an error creating the user: " + err);
-            }
-          });
+        return newUser.save();
       })
+      .then(() => resolve())
       .catch((err) => {
-        console.error("🔥 Error hashing password on Vercel:", err);
-        reject("There was an error encrypting the password");
+        if (err.code === 11000) {
+          reject("User Name already taken");
+        } else {
+          reject("There was an error creating the user: " + err);
+        }
       });
   });
 };
 
 module.exports.checkUser = function (userData) {
   return new Promise((resolve, reject) => {
-    User.find({ userName: userData.userName })
-      .then((users) => {
-        if (users.length === 0) {
-          reject("Unable to find user: " + userData.userName);
-          return;
-        }
+    if (!User) return reject("User model not initialized");
 
-        bcrypt.compare(userData.password, users[0].password)
-          .then((result) => {
-            if (!result) {
-              reject("Incorrect Password for user: " + userData.userName);
-              return;
-            }
+    User.findOne({ userName: userData.userName })
+      .then((user) => {
+        if (!user) return reject("Unable to find user: " + userData.userName);
 
-            if (users[0].loginHistory.length === 8) {
-              users[0].loginHistory.pop();
-            }
+        return bcrypt.compare(userData.password, user.password).then((result) => {
+          if (!result) {
+            return reject("Incorrect Password for user: " + userData.userName);
+          }
 
-            users[0].loginHistory.unshift({
-              dateTime: new Date().toString(),
-              userAgent: userData.userAgent,
-            });
+          // Update login history
+          if (user.loginHistory.length === 8) {
+            user.loginHistory.pop();
+          }
 
-            User.updateOne(
-              { userName: users[0].userName },
-              { $set: { loginHistory: users[0].loginHistory } }
-            )
-              .then(() => {
-                resolve(users[0]);
-              })
-              .catch((err) => {
-                reject("There was an error verifying the user: " + err);
-              });
-          })
-          .catch(() => {
-            reject("Incorrect Password for user: " + userData.userName);
+          user.loginHistory.unshift({
+            dateTime: new Date().toString(),
+            userAgent: userData.userAgent,
           });
+
+          return User.updateOne(
+            { userName: user.userName },
+            { $set: { loginHistory: user.loginHistory } }
+          ).then(() => resolve(user));
+        });
       })
-      .catch(() => {
-        reject("Unable to find user: " + userData.userName);
-      });
+      .catch((err) => reject("There was an error verifying the user: " + err));
   });
 };
