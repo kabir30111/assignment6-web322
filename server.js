@@ -143,22 +143,16 @@ app.use((req, res) => {
   res.status(404).render("404", { message: "Page not found" });
 });
 
-// ✅ Export app immediately for Vercel compatibility
-module.exports = app;
-
-// ✅ Initialize services after export (async-safe)
-(async () => {
-  try {
-    await initialize();
-    await authData.initialize();
-    console.log("✅ All services initialized");
-
-    if (!process.env.VERCEL) {
+// Hybrid handling: export for Vercel, listen locally
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  initialize()
+    .then(authData.initialize)
+    .then(() => {
       app.listen(process.env.PORT || 8000, () => {
         console.log(`🚀 Server running at http://localhost:${process.env.PORT || 8000}`);
       });
-    }
-  } catch (err) {
-    console.error("❌ Failed to initialize services:", err);
-  }
-})();
+    })
+    .catch(err => console.error("Failed to initialize server:", err));
+}
