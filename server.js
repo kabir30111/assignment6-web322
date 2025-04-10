@@ -144,15 +144,22 @@ app.use((req, res) => {
 });
 
 // Hybrid handling: export for Vercel, listen locally
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
-  initialize()
-    .then(authData.initialize)
-    .then(() => {
+const startServer = async () => {
+  try {
+    await initialize();
+    await authData.initialize();
+
+    if (process.env.VERCEL) {
+      console.log("✅ Initialization complete (Vercel)");
+      module.exports = app;
+    } else {
       app.listen(process.env.PORT || 8000, () => {
         console.log(`🚀 Server running at http://localhost:${process.env.PORT || 8000}`);
       });
-    })
-    .catch(err => console.error("Failed to initialize server:", err));
-}
+    }
+  } catch (err) {
+    console.error("❌ Failed to initialize services:", err);
+  }
+};
+
+startServer();
