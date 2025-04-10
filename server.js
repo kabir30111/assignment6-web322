@@ -143,15 +143,17 @@ app.use((req, res) => {
   res.status(404).render("404", { message: "Page not found" });
 });
 
-// ✅ Hybrid handling: ensure DB initialized before starting
-const startServer = async () => {
+// ✅ Export app immediately for Vercel compatibility
+module.exports = app;
+
+// ✅ Initialize services after export (async-safe)
+(async () => {
   try {
     await initialize();
     await authData.initialize();
+    console.log("✅ All services initialized");
 
-    if (process.env.VERCEL) {
-      module.exports = app; // Vercel needs module export
-    } else {
+    if (!process.env.VERCEL) {
       app.listen(process.env.PORT || 8000, () => {
         console.log(`🚀 Server running at http://localhost:${process.env.PORT || 8000}`);
       });
@@ -159,6 +161,4 @@ const startServer = async () => {
   } catch (err) {
     console.error("❌ Failed to initialize services:", err);
   }
-};
-
-startServer();
+})();
