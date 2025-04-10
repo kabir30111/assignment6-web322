@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 let User; // Will be set on successful DB connection
+let isInitialized = false; // ✅ Flag to track DB readiness
 
 const userSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
@@ -26,6 +27,7 @@ module.exports.initialize = function () {
 
     db.once("open", () => {
       User = db.model("users", userSchema);
+      isInitialized = true; // ✅ Mark initialized
       resolve();
     });
   });
@@ -33,7 +35,7 @@ module.exports.initialize = function () {
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User) {
+    if (!User || !isInitialized) {
       reject("User model is not initialized yet. Try again in a moment.");
       return;
     }
@@ -65,7 +67,7 @@ module.exports.registerUser = function (userData) {
           });
       })
       .catch((err) => {
-        console.error("🔥 Error hashing password on Vercel:", err);
+        console.error("🔥 Error hashing password:", err);
         reject("There was an error encrypting the password");
       });
   });
@@ -73,6 +75,11 @@ module.exports.registerUser = function (userData) {
 
 module.exports.checkUser = function (userData) {
   return new Promise((resolve, reject) => {
+    if (!User || !isInitialized) {
+      reject("User model is not initialized yet. Try again in a moment.");
+      return;
+    }
+
     User.find({ userName: userData.userName })
       .then((users) => {
         if (users.length === 0) {
