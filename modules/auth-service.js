@@ -16,25 +16,29 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-module.exports.initialize = async function () {
-  try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-    }
+let connectionPromise;
 
-    User = mongoose.models.User || mongoose.model("User", userSchema);
-  } catch (err) {
-    throw new Error("MongoDB connection failed: " + err);
+module.exports.initialize = async function () {
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(process.env.MONGODB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  }
+
+  await connectionPromise;
+
+  if (!mongoose.models.User) {
+    User = mongoose.model("User", userSchema);
+  } else {
+    User = mongoose.models.User;
   }
 };
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
     if (!User) {
-      return reject("User model not initialized. Try again shortly.");
+      return reject("User model not initialized");
     }
 
     if (userData.password !== userData.password2) {
@@ -66,7 +70,7 @@ module.exports.registerUser = function (userData) {
 
 module.exports.checkUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User) return reject("User model not initialized. Try again shortly.");
+    if (!User) return reject("User model not initialized");
 
     User.findOne({ userName: userData.userName })
       .then((user) => {
