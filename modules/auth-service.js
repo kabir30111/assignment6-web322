@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
-let User;
+let User = null; // Global model variable
 
 const userSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
@@ -16,30 +16,24 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-let connectionPromise;
+// This ensures connection is created once and reused across Vercel cold starts
+let isInitialized = false;
 
 module.exports.initialize = async function () {
-  if (!connectionPromise) {
-    connectionPromise = mongoose.connect(process.env.MONGODB, {
+  if (!isInitialized) {
+    await mongoose.connect(process.env.MONGODB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-  }
 
-  await connectionPromise;
-
-  if (!mongoose.models.User) {
-    User = mongoose.model("User", userSchema);
-  } else {
-    User = mongoose.models.User;
+    User = mongoose.models.User || mongoose.model("User", userSchema);
+    isInitialized = true;
   }
 };
 
 module.exports.registerUser = function (userData) {
   return new Promise((resolve, reject) => {
-    if (!User) {
-      return reject("User model not initialized");
-    }
+    if (!User) return reject("User model not initialized");
 
     if (userData.password !== userData.password2) {
       return reject("Passwords do not match");
