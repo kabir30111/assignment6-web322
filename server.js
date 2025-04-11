@@ -143,19 +143,16 @@ app.use((req, res) => {
   res.status(404).render("404", { message: "Page not found" });
 });
 
+// Hybrid handling: export for Vercel, listen locally
 if (process.env.VERCEL) {
-  authData.initialize().then(() => {
-    module.exports = app;
-  }).catch(err => {
-    console.error("Vercel init error:", err);
-  });
+  module.exports = app;
 } else {
   initialize()
     .then(authData.initialize)
     .then(() => {
       app.listen(process.env.PORT || 8000, () => {
-        console.log("🚀 Server running");
+        console.log(`🚀 Server running at http://localhost:${process.env.PORT || 8000}`);
       });
     })
-    .catch(err => console.error("Startup error:", err));
+    .catch(err => console.error("Failed to initialize server:", err));
 }
