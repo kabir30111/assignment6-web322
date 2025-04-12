@@ -143,16 +143,21 @@ app.use((req, res) => {
   res.status(404).render("404", { message: "Page not found" });
 });
 
-// Hybrid handling: export for Vercel, listen locally
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
-  initialize()
-    .then(authData.initialize)
-    .then(() => {
+const startApp = async () => {
+  try {
+    await initialize(); // PostgreSQL
+    await authData.initialize(); // MongoDB (Mongoose)
+
+    if (process.env.VERCEL) {
+      module.exports = app; // For serverless Vercel deployment
+    } else {
       app.listen(process.env.PORT || 8000, () => {
         console.log(`🚀 Server running at http://localhost:${process.env.PORT || 8000}`);
       });
-    })
-    .catch(err => console.error("Failed to initialize server:", err));
-}
+    }
+  } catch (err) {
+    console.error("❌ Startup failed:", err);
+  }
+};
+
+startApp();
